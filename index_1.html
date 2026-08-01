@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohit Baraiya — AI/ML Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000; --bg2:#0A0A0C; --panel:#111113;
+    --ink:#F4F2EC; --ink-dim:#9A978F; --ink-faint:#5B594F;
+    --gold:#FFB43C; --gold-dim:#7A5B26;
+    --cyan:#6EE7E0; --cyan-dim:#2F6864;
+    --line:#232330;
+    --serif:'Bricolage Grotesque', system-ui, sans-serif;
+    --sans:'Inter', -apple-system, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden;}
+  ::selection{background:var(--gold);color:#000000;}
+  a{color:inherit;text-decoration:none;}
+  img,canvas{display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+
+  .noise{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.035;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  /* header */
+  header{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 0;mix-blend-mode:difference;}
+  header .wrap{display:flex;justify-content:flex-end;align-items:center;}
+  nav{display:flex;gap:36px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;}
+  nav a{color:var(--ink);opacity:.65;transition:opacity .2s;position:relative;}
+  nav a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--gold);transition:width .25s;}
+  nav a:hover{opacity:1;}
+  nav a:hover::after{width:100%;}
+  @media(max-width:760px){ nav{display:none;} }
+
+  /* hero */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;}
+  #hero-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9;}
+  .hero-inner{position:relative;z-index:3;padding-top:60px;}
+  .hero-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--ink);display:flex;align-items:center;gap:10px;margin-bottom:26px;overflow:hidden;}
+  .hero-eyebrow em{font-style:normal;color:var(--ink-faint);}
+  h1.headline{font-family:var(--serif);font-weight:700;font-size:clamp(52px,9.5vw,132px);line-height:.94;letter-spacing:-0.02em;}
+  h1.headline .row{overflow:hidden;padding-bottom:.05em;}
+  h1.headline .row span{display:inline-block;}
+  h1.headline .grad{color:var(--ink);}
+  .hero-sub{margin-top:30px;font-family:var(--sans);font-size:clamp(15px,1.6vw,19px);color:var(--ink-dim);max-width:560px;overflow:hidden;}
+  .hero-sub p{transform:translateY(110%);}
+  .hero-cta{margin-top:44px;display:flex;gap:16px;flex-wrap:wrap;overflow:hidden;}
+  .hero-cta > *{transform:translateY(120%);}
+  .btn{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;padding:17px 24px;border-radius:2px;border:1px solid var(--line);position:relative;display:inline-flex;align-items:center;justify-content:space-between;gap:24px;min-width:210px;transition:border-color .25s,color .25s,background .25s;}
+  .btn::after{content:"↗";font-size:14px;transition:transform .25s;}
+  .btn:hover::after{transform:translate(3px,-3px);}
+  .btn.solid{color:var(--ink);border-color:var(--ink);}
+  .btn.solid:hover{background:var(--gold);border-color:var(--gold);color:#000;}
+  .btn.outline{color:var(--ink-dim);}
+  .btn.outline:hover{border-color:var(--cyan);color:var(--cyan);}
+  .scroll-cue{position:absolute;bottom:34px;left:32px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-faint);display:flex;align-items:center;gap:10px;z-index:3;}
+  .scroll-cue .bar{width:1px;height:34px;background:linear-gradient(var(--cyan),transparent);animation:scrollbar 1.8s ease-in-out infinite;}
+  @keyframes scrollbar{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}50.01%{transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+  /* marquee */
+  .marquee-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0;overflow:hidden;position:relative;z-index:3;background:var(--bg);}
+  .marquee-track{display:flex;white-space:nowrap;width:max-content;animation:scroll-left 32s linear infinite;}
+  .marquee-track span{font-family:var(--mono);font-size:14px;letter-spacing:.04em;color:var(--ink-faint);padding:0 22px;display:flex;align-items:center;gap:22px;}
+  .marquee-track span::after{content:"◆";color:var(--gold-dim);font-size:9px;}
+  @keyframes scroll-left{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* section shell */
+  section{position:relative;padding:150px 0;z-index:3;}
+  .idx{position:sticky;top:120px;float:left;margin-left:-4px;}
+  .section-label{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:26px;}
+  .section-label::before{content:"";width:26px;height:1px;background:var(--gold-dim);}
+  .split{overflow:hidden;}
+  .split > *{transform:translateY(100%);}
+
+  h2.big{font-family:var(--serif);font-weight:700;font-size:clamp(34px,5vw,58px);line-height:1.04;letter-spacing:-.015em;max-width:15ch;}
+
+  /* about */
+  .about-flex{max-width:680px;margin-top:56px;}
+  .about-flex p{font-size:18px;line-height:1.7;color:var(--ink-dim);margin-bottom:20px;}
+  .about-flex strong{color:var(--ink);font-weight:600;}
+  .about-flex .lead{font-family:var(--serif);font-weight:600;font-size:22px;line-height:1.5;color:var(--ink);margin-bottom:28px;}
+
+  /* projects */
+  .project{padding:64px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:80px 1fr;gap:36px;align-items:start;}
+  .project:last-child{border-bottom:1px solid var(--line);}
+  .p-num{font-family:var(--mono);font-size:14px;color:var(--ink-faint);padding-top:6px;}
+  .p-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .p-main h3{font-family:var(--serif);font-weight:700;font-size:clamp(28px,3.4vw,42px);letter-spacing:-.01em;transition:color .25s;}
+  .project:hover .p-main h3{color:var(--gold);}
+  .p-main .p-sub{font-family:var(--mono);font-size:12px;color:var(--cyan);margin-top:8px;letter-spacing:.04em;}
+  .p-main p.desc{color:var(--ink-dim);margin-top:18px;font-size:15.5px;max-width:56ch;line-height:1.65;}
+  .p-main ul{list-style:none;margin-top:16px;}
+  .p-main li{position:relative;padding-left:18px;font-size:14.5px;color:var(--ink-dim);margin-bottom:8px;}
+  .p-main li::before{content:"→";position:absolute;left:0;color:var(--gold-dim);}
+  .stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+  .stack span{font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);border:1px solid var(--line);padding:5px 10px;border-radius:100px;}
+  .p-links{margin-top:22px;display:flex;gap:20px;font-family:var(--mono);font-size:12.5px;}
+  .p-links a{color:var(--ink);border-bottom:1px solid var(--gold-dim);padding-bottom:2px;}
+  .p-links a:hover{color:var(--gold);}
+  .status-chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;padding:5px 10px;border-radius:2px;border:1px solid;white-space:nowrap;}
+  .status-chip.live{color:var(--cyan);border-color:var(--cyan-dim);background:rgba(110,231,224,.06);}
+  .status-chip.progress{color:var(--gold);border-color:var(--gold-dim);background:rgba(255,180,60,.06);}
+  @media(max-width:900px){ .project{grid-template-columns:1fr;} }
+
+  /* skills */
+  .skills-wrap{margin-top:50px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .skill-tile{background:var(--bg);padding:28px 26px;transition:background .25s;}
+  .skill-tile:hover{background:var(--panel);}
+  .skill-tile h4{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;}
+  .skill-tile .tags{display:flex;flex-wrap:wrap;gap:7px;}
+  .skill-tile .tags span{font-size:12.5px;color:var(--ink-dim);}
+  .skill-tile .tags span:not(:last-child)::after{content:"·";color:var(--ink-faint);margin-left:7px;}
+  @media(max-width:800px){ .skills-wrap{grid-template-columns:1fr;} }
+
+  /* timeline */
+  .tl{margin-top:50px;}
+  .tl-item{display:grid;grid-template-columns:170px 1fr;gap:30px;padding:30px 0;border-top:1px solid var(--line);}
+  .tl-item:last-child{border-bottom:1px solid var(--line);}
+  .tl-date{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);padding-top:3px;}
+  .tl-body h4{font-family:var(--serif);font-weight:700;font-size:21px;}
+  .tl-body .org{font-family:var(--mono);font-size:12.5px;color:var(--gold);margin-top:6px;}
+  .tl-body ul{list-style:none;margin-top:14px;}
+  .tl-body li{position:relative;padding-left:18px;font-size:14.5px;color:var(--ink-dim);margin-bottom:8px;}
+  .tl-body li::before{content:"→";position:absolute;left:0;color:var(--gold-dim);}
+  .tl-body .meta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:10px;}
+  @media(max-width:700px){ .tl-item{grid-template-columns:1fr;gap:8px;} }
+
+  /* contact */
+  .contact-sec{text-align:center;padding-bottom:60px;}
+  .contact-big{font-family:var(--serif);font-weight:700;font-size:clamp(40px,8vw,96px);line-height:.98;letter-spacing:-.02em;margin:20px 0 40px;}
+  .contact-big .grad{color:var(--ink);}
+  .mail-btn{display:inline-flex;align-items:center;gap:22px;font-family:var(--mono);font-size:15px;letter-spacing:.03em;border:1px solid var(--line);padding:20px 30px;border-radius:2px;transition:border-color .25s,color .25s;}
+  .mail-btn::after{content:"↗";font-size:15px;transition:transform .25s;}
+  .mail-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .mail-btn:hover::after{transform:translate(3px,-3px);}
+  .social-row{margin-top:46px;display:flex;justify-content:center;gap:28px;font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);letter-spacing:.04em;}
+  .social-row a:hover{color:var(--cyan);}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;position:relative;z-index:3;}
+  footer .wrap{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex-wrap:wrap;gap:10px;}
+
+  @media(prefers-reduced-motion:reduce){ *{animation:none !important;transition:none !important;} }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="wrap hero-inner">
+    <div class="hero-eyebrow"><span>RAJKOT, INDIA</span><em>/// BUILDING AGENTIC AI SYSTEMS</em></div>
+    <h1 class="headline">
+      <div class="row"><span>Mohit</span></div>
+      <div class="row"><span class="grad">Baraiya.</span></div>
+    </h1>
+    <div class="hero-sub"><p>AI/ML engineer building agentic RAG systems — hybrid retrieval, graph reasoning, and LangGraph pipelines, shipped as real deployed products, not notebooks.</p></div>
+    <div class="hero-cta">
+      <a href="#projects" class="btn solid">See the work</a>
+      <a href="#contact" class="btn outline">Get in touch</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="bar"></div>SCROLL</div>
+</section>
+
+<div class="marquee-strip">
+  <div class="marquee-track" id="marquee">
+    <span>LANGGRAPH</span><span>AGENTIC RAG</span><span>GRAPH RAG</span><span>PINECONE</span><span>FASTAPI</span><span>SUPABASE</span><span>HYBRID SEARCH</span><span>GROQ · LLAMA 3</span><span>TAVILY</span><span>NETWORKX</span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-label split"><span>01 / About</span></div>
+    <h2 class="big split"><span>Systems that retrieve, reason, and actually ship.</span></h2>
+    <div class="about-flex">
+      <div>
+        <p class="split"><span><strong>AI/ML Engineering student</strong> at Government Engineering College Rajkot, focused on production LLM systems — hybrid retrieval RAG, graph-based RAG, and agentic pipelines built with LangGraph.</span></p>
+        <p class="split"><span>I've shipped two full-stack AI applications end to end — backend to deployment — and I'm currently building an agentic RAG system combining vector, keyword, and graph retrieval behind a quantitative evaluation layer.</span></p>
+        <p class="split"><span>Before this: a Flutter Developer internship building real-time infrastructure with Firebase — where the full-stack instinct started.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="section-label split"><span>02 / Selected Work</span></div>
+    <h2 class="big split"><span>Projects worth reading the source for.</span></h2>
+
+    <div class="project">
+      <div class="p-num">01</div>
+      <div class="p-main">
+        <div class="p-head"><h3>GraphAgenticRAG</h3><span class="status-chip progress">IN PROGRESS</span></div>
+        <div class="p-sub">Agentic RAG · Hybrid + Graph Retrieval</div>
+        <p class="desc">A production agentic RAG system combining hybrid search (Pinecone dense + BM25 sparse) with graph-based retrieval (NetworkX) and live web search (Tavily) for multi-source Q&amp;A.</p>
+        <ul>
+          <li>LangGraph agent state machine with a verifier / re-evaluation loop that checks retrieved context before response generation.</li>
+          <li>FastAPI backend with SSE streaming and Supabase Auth (JWT via JWKS, ES256) for secure real-time multi-user sessions.</li>
+          <li>Building a RAGAS evaluation layer to measure retrieval precision and recall.</li>
+        </ul>
+        <div class="stack"><span>Python</span><span>LangGraph</span><span>Pinecone</span><span>BM25</span><span>NetworkX</span><span>Tavily</span><span>FastAPI · SSE</span></div>
+        <div class="p-links"><a href="https://github.com/Mohit-Baraiya11/GraphAgenticRAG" target="_blank" rel="noopener">Source →</a></div>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="p-num">02</div>
+      <div class="p-main">
+        <div class="p-head"><h3>Blueprint Agent</h3><span class="status-chip live">LIVE</span></div>
+        <div class="p-sub">LangGraph Agentic Pipeline</div>
+        <p class="desc">An 8-node LangGraph pipeline that turns a vague project idea into a downloadable PDF blueprint — market validation, system architecture, tech stack, and a phase-wise build plan.</p>
+        <ul>
+          <li>Human-in-the-Loop via LangGraph's <code style="color:var(--ink)">interrupt()</code> — pauses mid-execution for clarification, resumes after the user answers.</li>
+          <li>Tavily web search inside a validation node checks competitors and market fit before architecture generation.</li>
+          <li>Skill-aware stack recommendations and a final PDF export with an embedded SVG architecture diagram.</li>
+        </ul>
+        <div class="stack"><span>Python</span><span>FastAPI</span><span>LangGraph</span><span>Groq · LLaMA 3</span><span>Tavily</span><span>Render</span></div>
+        <div class="p-links">
+          <a href="https://mohit-baraiya11.github.io/Blueprint-agent/" target="_blank" rel="noopener">Live demo →</a>
+          <a href="https://github.com/Mohit-Baraiya11/Blueprint-agent" target="_blank" rel="noopener">Source →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="p-num">03</div>
+      <div class="p-main">
+        <div class="p-head"><h3>SourceMind AI</h3><span class="status-chip live">LIVE</span></div>
+        <div class="p-sub">Hybrid RAG Chatbot</div>
+        <p class="desc">Hybrid RAG chatbot combining dense HuggingFace embeddings with BM25 sparse vectors on Pinecone, using parent-child semantic chunking (~390 indexed chunks) for PDF and YouTube transcript Q&amp;A. Full session isolation with conversation memory in Supabase.</p>
+        <div class="stack"><span>Python</span><span>LangChain</span><span>Pinecone</span><span>HuggingFace</span><span>Groq · LLaMA 3</span><span>Supabase</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-label split"><span>03 / Toolset</span></div>
+    <h2 class="big split"><span>What I build with.</span></h2>
+    <div class="skills-wrap">
+      <div class="skill-tile"><h4>Generative AI</h4><div class="tags"><span>RAG</span><span>Hybrid RAG</span><span>Graph RAG</span><span>Agentic AI</span><span>LangGraph</span><span>HITL</span><span>Tool Calling</span><span>Pinecone</span><span>Groq (LLaMA 3)</span></div></div>
+      <div class="skill-tile"><h4>ML &amp; Data</h4><div class="tags"><span>EDA</span><span>Regression</span><span>Decision Trees</span><span>Random Forest</span><span>K-Means</span><span>Ensemble Learning</span></div></div>
+      <div class="skill-tile"><h4>Deep Learning</h4><div class="tags"><span>ANN</span><span>CNN</span><span>RNN</span><span>LSTM</span><span>GRU</span><span>Transformers</span><span>Keras</span><span>TensorFlow</span></div></div>
+      <div class="skill-tile"><h4>Languages</h4><div class="tags"><span>Python</span><span>SQL</span></div></div>
+      <div class="skill-tile"><h4>Frameworks &amp; DB</h4><div class="tags"><span>FastAPI</span><span>LangChain</span><span>LangGraph</span><span>Supabase</span><span>Pinecone</span></div></div>
+      <div class="skill-tile"><h4>Tools</h4><div class="tags"><span>Render</span><span>GitHub Pages</span><span>Git</span><span>VS Code</span><span>Jupyter</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="section-label split"><span>04 / Experience</span></div>
+    <h2 class="big split"><span>Experience.</span></h2>
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-date">Jan 2025 — Jun 2025</div>
+        <div class="tl-body">
+          <h4>Flutter Developer Intern</h4>
+          <div class="org">Fuerte Developers · Rajkot, India</div>
+          <ul>
+            <li>Built Aapka Vyapar, a cross-platform business management app for small shopkeepers covering sales, stock, purchases, and customer records.</li>
+            <li>Integrated Firebase authentication, Firestore real-time database, and push notifications; handled API integration and state management.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="section-label split"><span>05 / Education</span></div>
+    <h2 class="big split"><span>Education.</span></h2>
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-date">2025 — Present</div>
+        <div class="tl-body">
+          <h4>B.E. in AI and Data Science</h4>
+          <div class="org">Government Engineering College Rajkot</div>
+          <div class="meta">Rajkot, India · Currently in 5th Semester</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Completed 2025</div>
+        <div class="tl-body">
+          <h4>Diploma in Computer Science &amp; Engineering</h4>
+          <div class="org">R.K. University School of Diploma Studies</div>
+          <div class="meta">Rajkot, India · SGPA: 8.90</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact-sec">
+  <div class="wrap">
+    <div class="section-label split" style="justify-content:center"><span>06 / Get in Touch</span></div>
+    <h2 class="contact-big split"><span>Let's build <span class="grad">something.</span></span></h2>
+    <a href="mailto:mohitbaraiya761@gmail.com" class="mail-btn">mohitbaraiya761@gmail.com</a>
+    <div class="social-row">
+      <a href="tel:+917096395426">+91 70963 95426</a>
+      <a href="https://github.com/Mohit-Baraiya11" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/mohit-baraiya-a929242a7/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 MOHIT BARAIYA — RAJKOT, INDIA</span>
+    <span>OPEN TO AI/ML INTERNSHIPS</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ---------- three.js knowledge-graph background ---------- */
+(function(){
+  const canvas=document.getElementById('hero-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+  camera.position.z=13;
+
+  function size(){
+    const w=canvas.clientWidth,h=canvas.clientHeight;
+    renderer.setSize(w,h,false);
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    camera.aspect=w/h; camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize',size); size();
+
+  const group=new THREE.Group(); scene.add(group);
+  const N=70, pos=[];
+  for(let i=0;i<N;i++){
+    const v=new THREE.Vector3((Math.random()-0.5)*16,(Math.random()-0.5)*9,(Math.random()-0.5)*8);
+    pos.push(v);
+  }
+  const ptGeo=new THREE.BufferGeometry();
+  const arr=new Float32Array(N*3);
+  pos.forEach((v,i)=>{arr[i*3]=v.x;arr[i*3+1]=v.y;arr[i*3+2]=v.z;});
+  ptGeo.setAttribute('position',new THREE.BufferAttribute(arr,3));
+  const ptMat=new THREE.PointsMaterial({color:0xffb43c,size:0.09,transparent:true,opacity:0.9});
+  group.add(new THREE.Points(ptGeo,ptMat));
+
+  const lineVerts=[];
+  for(let i=0;i<N;i++){
+    for(let j=i+1;j<N;j++){
+      if(pos[i].distanceTo(pos[j])<3.4){
+        lineVerts.push(pos[i].x,pos[i].y,pos[i].z,pos[j].x,pos[j].y,pos[j].z);
+      }
+    }
+  }
+  const lineGeo=new THREE.BufferGeometry();
+  lineGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lineVerts),3));
+  const lineMat=new THREE.LineBasicMaterial({color:0x6ee7e0,transparent:true,opacity:0.16});
+  group.add(new THREE.LineSegments(lineGeo,lineMat));
+
+  let tx=0,ty=0;
+  window.addEventListener('mousemove',e=>{
+    tx=(e.clientX/innerWidth-0.5)*0.5;
+    ty=(e.clientY/innerHeight-0.5)*0.5;
+  });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    group.rotation.y+=0.0009;
+    group.rotation.x+=(ty*0.3-group.rotation.x)*0.02;
+    group.rotation.y+=(tx*0.3)*0.0006;
+    renderer.render(scene,camera);
+  }
+  animate();
+})();
+
+/* ---------- GSAP scroll + entrance animations ---------- */
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.timeline({defaults:{ease:'power4.out'}})
+  .to('.hero-eyebrow',{opacity:1,duration:.01})
+  .from('.hero-eyebrow',{y:20,opacity:0,duration:.8},0)
+  .to('h1.headline .row span',{y:0,duration:1,stagger:.12},0.15)
+  .to('.hero-sub p',{y:0,duration:.9},0.55)
+  .to('.hero-cta > *',{y:0,duration:.8,stagger:.1},0.75);
+
+gsap.utils.toArray('.split').forEach(el=>{
+  const target = el.querySelector('span') || el;
+  gsap.fromTo(target,{y:'100%'},{
+    y:'0%',duration:1,ease:'power4.out',
+    scrollTrigger:{trigger:el,start:'top 90%'}
+  });
+});
+
+document.querySelectorAll('.project').forEach(p=>{
+  gsap.fromTo(p,{opacity:0,y:60},{opacity:1,y:0,duration:1,ease:'power3.out',
+    scrollTrigger:{trigger:p,start:'top 85%'}});
+});
+
+document.querySelectorAll('.skill-tile').forEach((s,i)=>{
+  gsap.fromTo(s,{opacity:0,y:20},{opacity:1,y:0,duration:.6,delay:(i%3)*0.08,
+    scrollTrigger:{trigger:s,start:'top 94%'}});
+});
+
+document.querySelectorAll('.tl-item').forEach(t=>{
+  gsap.fromTo(t,{opacity:0,x:-24},{opacity:1,x:0,duration:.8,
+    scrollTrigger:{trigger:t,start:'top 90%'}});
+});
+</script>
+</body>
+</html>
